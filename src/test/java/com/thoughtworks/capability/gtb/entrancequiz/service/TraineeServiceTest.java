@@ -23,4 +23,13 @@ public class TraineeServiceTest {
         assertEquals(35, traineeList.size());
     }
 
+    @Test
+    public void should_add_trainee_and_return_id_when_add_trainee() {
+        List<Trainee> traineeList = traineeService.addTrainee(Trainee.builder().name("小明").build());
+
+        assertEquals(36, traineeList.size());
+        assertEquals(36, traineeList.get(35).getId());
+        assertEquals("小明", traineeList.get(35).getName());
+    }
+
 }

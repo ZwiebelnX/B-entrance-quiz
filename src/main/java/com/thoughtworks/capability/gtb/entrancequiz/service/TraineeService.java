@@ -24,9 +24,8 @@ public class TraineeService {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                 String lineString;
                 while ((lineString = bufferedReader.readLine()) != null) {
-                    Trainee trainee = Trainee.builder().id(nextId).name(lineString).build();
+                    Trainee trainee = Trainee.builder().id(getNextId()).name(lineString).build();
                     traineeList.add(trainee);
-                    nextId++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -39,4 +38,15 @@ public class TraineeService {
         return traineeList;
     }
 
+    public List<Trainee> addTrainee(Trainee trainee) {
+        trainee.setId(getNextId());
+        traineeList.add(trainee);
+        return traineeList;
+    }
+
+    private int getNextId() {
+        int id = nextId;
+        nextId++;
+        return id;
+    }
 }
