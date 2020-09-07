@@ -22,4 +22,5 @@ public class TraineeServiceTest {
 
         assertEquals(35, traineeList.size());
     }
+
 }

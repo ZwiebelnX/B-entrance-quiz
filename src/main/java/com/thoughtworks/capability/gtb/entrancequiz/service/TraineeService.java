@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 public class TraineeService {
 
-    private static final List<Trainee> traineeList = new ArrayList<>();
+    public static final List<Trainee> traineeList = new ArrayList<>();
 
-    private static int nextId = 0;
+    private static int nextId = 1;
 
     public TraineeService() {
         if (traineeList.size() == 0) {

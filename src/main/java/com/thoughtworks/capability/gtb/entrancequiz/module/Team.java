@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Team {
 
-    private int id;
-
     private String name;
 
     private List<Trainee> traineeList;
