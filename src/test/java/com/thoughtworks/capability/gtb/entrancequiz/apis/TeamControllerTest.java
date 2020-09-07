@@ -1,9 +1,13 @@
 package com.thoughtworks.capability.gtb.entrancequiz.apis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.capability.gtb.entrancequiz.module.Team;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -29,6 +33,35 @@ public class TeamControllerTest {
             .andExpect(jsonPath("$[3].traineeList", hasSize(6)))
             .andExpect(jsonPath("$[4].traineeList", hasSize(6)))
             .andExpect(jsonPath("$[5].traineeList", hasSize(5)));
+    }
 
+    @Test
+    public void should_change_team_name_when_post_team() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Team team = Team.builder().name("集成更改测试").build();
+        mockMvc.perform(
+            post("/team/1/name").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(team)))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_throw_error_when_post_team_given_wrong_index() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Team team = Team.builder().name("集成更改测试").build();
+        mockMvc.perform(post("/team/-1/name").contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(team))).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void should_throw_error_when_post_team_given_duplicate_name() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Team team = Team.builder().name("集成冲突测试").build();
+        mockMvc.perform(
+            post("/team/1/name").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(team)))
+            .andExpect(status().isOk());
+
+        mockMvc.perform(
+            post("/team/2/name").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(team)))
+            .andExpect(status().isConflict());
     }
 }

@@ -2,6 +2,8 @@ package com.thoughtworks.capability.gtb.entrancequiz.service;
 
 import com.thoughtworks.capability.gtb.entrancequiz.module.Team;
 import com.thoughtworks.capability.gtb.entrancequiz.module.Trainee;
+import com.thoughtworks.capability.gtb.entrancequiz.module.exception.TeamNameConflictException;
+import com.thoughtworks.capability.gtb.entrancequiz.module.exception.TeamNotFoundException;
 
 import org.springframework.stereotype.Service;
 
@@ -11,15 +13,25 @@ import java.util.List;
 @Service
 public class TeamService {
 
-    private static final List<Team> teamList = new ArrayList<>();
+    public static final List<Team> teamList = new ArrayList<>();
+
+    public TeamService() {
+
+    }
 
     public List<Team> splitIntoTeam() {
-        teamList.clear();
-        for (int i = 0; i < 6; i++) {
-            teamList.add(Team.builder().name("Team " + (i + 1)).traineeList(new ArrayList<>()).build());
+        if (teamList.size() < 6) {
+            teamList.clear();
+            for (int i = 0; i < 6; i++) {
+                teamList.add(Team.builder().name("Team " + (i + 1)).traineeList(new ArrayList<>()).build());
+            }
+        } else {
+            for (Team team : teamList) {
+                team.getTraineeList().clear();
+            }
         }
-        List<Trainee> traineeList = new ArrayList<>(TraineeService.traineeList);
 
+        List<Trainee> traineeList = new ArrayList<>(TraineeService.traineeList);
         int teamIndex = 0;
         while (traineeList.size() > 0) {
             int selectId = (int) Math.round(Math.random() * (traineeList.size() - 1));
@@ -33,5 +45,22 @@ public class TeamService {
         }
 
         return teamList;
+    }
+
+    public void changeTeamName(int index, Team team) throws TeamNotFoundException, TeamNameConflictException {
+        Team selectedTeam;
+        try {
+            selectedTeam = teamList.get(index);
+        } catch (Exception e) {
+            throw new TeamNotFoundException();
+        }
+
+        for (Team currentTeam : teamList) {
+            if (currentTeam.getName().equals(team.getName())) {
+                throw new TeamNameConflictException();
+            }
+        }
+
+        selectedTeam.setName(team.getName());
     }
 }
