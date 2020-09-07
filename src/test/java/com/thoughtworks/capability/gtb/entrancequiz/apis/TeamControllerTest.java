@@ -2,7 +2,10 @@ package com.thoughtworks.capability.gtb.entrancequiz.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.capability.gtb.entrancequiz.module.Team;
+import com.thoughtworks.capability.gtb.entrancequiz.service.TeamService;
+import com.thoughtworks.capability.gtb.entrancequiz.service.TraineeService;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,6 +25,12 @@ public class TeamControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        TraineeService.resetTrainee();
+        TeamService.resetTeam();
+    }
 
     @Test
     public void should_get_team_list_when_post_list() throws Exception {
@@ -63,5 +73,10 @@ public class TeamControllerTest {
         mockMvc.perform(
             post("/team/2/name").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(team)))
             .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void should_get_team_list_when_get_team_list() throws Exception {
+        mockMvc.perform(get("/team/list")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(6)));
     }
 }

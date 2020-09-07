@@ -2,7 +2,10 @@ package com.thoughtworks.capability.gtb.entrancequiz.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.capability.gtb.entrancequiz.module.Trainee;
+import com.thoughtworks.capability.gtb.entrancequiz.service.TeamService;
+import com.thoughtworks.capability.gtb.entrancequiz.service.TraineeService;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +25,12 @@ class TraineeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        TraineeService.resetTrainee();
+        TeamService.resetTeam();
+    }
 
     @Test
     public void should_get_trainee_list_when_get_list() throws Exception {

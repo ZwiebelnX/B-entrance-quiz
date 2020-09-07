@@ -19,18 +19,7 @@ public class TraineeService {
 
     public TraineeService() {
         if (traineeList.size() == 0) {
-            try {
-                File file = new File("defaultList.txt");
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                String lineString;
-                while ((lineString = bufferedReader.readLine()) != null) {
-                    Trainee trainee = Trainee.builder().id(getNextId()).name(lineString).build();
-                    traineeList.add(trainee);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+            addDefaultData();
         }
     }
 
@@ -44,9 +33,31 @@ public class TraineeService {
         return traineeList;
     }
 
-    private int getNextId() {
+    public static void resetTrainee() {
+        traineeList.clear();
+        nextId = 1;
+        addDefaultData();
+    }
+
+    private static int getNextId() {
         int id = nextId;
         nextId++;
         return id;
     }
+
+    private static void addDefaultData() {
+        try {
+            File file = new File("defaultList.txt");
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String lineString;
+            while ((lineString = bufferedReader.readLine()) != null) {
+                Trainee trainee = Trainee.builder().id(getNextId()).name(lineString).build();
+                traineeList.add(trainee);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
 }

@@ -15,10 +15,6 @@ public class TeamService {
 
     public static final List<Team> teamList = new ArrayList<>();
 
-    public TeamService() {
-
-    }
-
     public List<Team> splitIntoTeam() {
         if (teamList.size() < 6) {
             teamList.clear();
@@ -62,5 +58,16 @@ public class TeamService {
         }
 
         selectedTeam.setName(team.getName());
+    }
+
+    public List<Team> getTeamList() {
+        return teamList;
+    }
+
+    public static void resetTeam() {
+        teamList.clear();
+        for (int i = 0; i < 6; i++) {
+            teamList.add(Team.builder().name("Team " + (i + 1)).traineeList(new ArrayList<>()).build());
+        }
     }
 }

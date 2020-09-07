@@ -4,6 +4,7 @@ import com.thoughtworks.capability.gtb.entrancequiz.module.Team;
 import com.thoughtworks.capability.gtb.entrancequiz.module.exception.TeamNameConflictException;
 import com.thoughtworks.capability.gtb.entrancequiz.module.exception.TeamNotFoundException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,12 @@ public class TeamServiceTest {
 
     @InjectMocks
     private TeamService teamService;
+
+    @BeforeEach
+    public void setUp() {
+        TraineeService.resetTrainee();
+        TeamService.resetTeam();
+    }
 
     @Test
     public void should_return_team_list_when_split_into_team() {
@@ -63,5 +70,11 @@ public class TeamServiceTest {
 
         assertEquals("更改测试", TeamService.teamList.get(1).getName());
         assertThrows(TeamNameConflictException.class, () -> teamService.changeTeamName(2, team));
+    }
+
+    @Test
+    public void should_get_team_list_when_get_team_list() {
+        List<Team> teamList = teamService.getTeamList();
+        assertEquals(6, teamList.size());
     }
 }
